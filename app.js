@@ -10,15 +10,13 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var flash = require('connect-flash');
 var morgan = require('morgan');
-var AWS = require('aws-sdk');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-var configdb = require('./config/database.js')
-
 var index = require('./routes/index');
 var users = require('./routes/users');
+var aws_router = require('./routes/aws');
 
 var app = express();
 
@@ -36,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/aws', aws_router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
