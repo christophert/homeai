@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "array": "cpp",
+        "rope": "cpp",
+        "ratio": "cpp",
+        "mutex": "cpp"
+    }
+}
