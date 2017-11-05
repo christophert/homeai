@@ -834,17 +834,51 @@ block pagejs
             }
         });
     script.
-        $.ajax({
-            url: '/aws/st-data',
-            type: 'GET',
-            success: function(data) {
-                $.each(data, function(index, prentry) {
-                });
-                $('#phue').append('<td>Status Unknown</td>').addClass('table-danger');
-                $('#smartoutlet').append('<td>Status Unknown</td>').addClass('table-danger');
-                $('#deadbolt').append('<td>Status Unknown</td>').addClass('table-danger');
-                $('#watch').append('<td>Active</td>').addClass('table-success');
-                $('#nest').append('<td>Active; Training</td>').addClass('table-warning');
-                $('.cdeviceinit').show();
-            }
-        });
+        var polling;
+        (function poll() {
+            $.ajax({
+                url: '/aws/st-data',
+                type: 'GET',
+                success: function(data) {
+                    $(document).find('.jq-ad-fill').remove();
+                    var latest_record;
+                    var highest_time = -1;
+                    $.each(data, function(index, prentry) {
+                        if(prentry.time > highest_time) {
+                            highest_time = prentry.time;
+                            latest_record = prentry;
+                        }
+                    });
+
+                    console.log(latest_record);
+                    phue_status = {'light1': "Off", 'light2': "Off"};
+                    latest_record.lights = JSON.parse(latest_record.lights);
+                    if(latest_record.lights[0] == 1) {
+                        phue_status.light1 = "On";
+                    }
+                    if(latest_record.lights[1] == 1) {
+                        phue_status.light2 = "On";
+                    }
+                    $('#phue').append('<td class="jq-ad-fill">Living Room: '+phue_status.light1+'<br>Bedroom: '+phue_status.light2+'</td>');
+                    if(latest_record.lock) {
+                        $('#smartoutlet').append('<td class="jq-ad-fill">Online</td>').addClass('table-success');
+                    } else {
+                        $('#smartoutlet').append('<td class="jq-ad-fill">Offline</td>').addClass('table-danger');
+                    }
+                    $('#deadbolt').append('<td class="jq-ad-fill">Device Offline</td>').addClass('table-danger');
+                    $('#watch').append('<td class="jq-ad-fill">Active</td>').addClass('table-success');
+                    $('#nest').append('<td class="jq-ad-fill">Active; Training</td>').addClass('table-warning');
+                    $('.cdeviceinit').show();
+                },
+                dataType: "json",
+                complete: polling = setTimeout(function() {poll()}, 10000), //every sixty seconds, poll
+                statusCode: {
+                    401: function() {
+                        clearTimeout(polling);
+                        $('.navbar').css('background-color', '#CD2626');
+                        $('.navbar').css('border-color', '#CD2626');
+                    }
+                },
+                timeout: 2000
+            });
+        })();
