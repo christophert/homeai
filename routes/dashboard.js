@@ -13,18 +13,37 @@ var params = {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var hrDataFull = [];
-    var hrDataLabels = [], hrData = [];
+    var hrDataFull = [], ocDataFull = [], statDataFull = [];
     db.scan(params, function(err, data) {
         if(err) {
             console.log("Error", err);
         } else {
             data.Items.forEach(function(element, index, array) {
-                hrDataLabels.push(element.time);
-                hrData.push(element.hr);
-                hrDataFull.push(element);
+                hrDataFull.push(JSON.stringify(element));
             });
-            res.render('dashboard', { hr: hrDataFull });
+
+            params.TableName = 'occupancy';
+            db.scan(params, function(err, data) {
+                if(err) {
+                    console.log("Error occupancy", err);
+                } else {
+                    data.Items.forEach(function(element, index, array) {
+                        ocDataFull.push(JSON.stringify(element));
+                    });
+
+                    params.TableName = 'predictions';
+                    db.scan(params, function(err, data) {
+                        if(err) {
+                            console.log("Error predictions", err);
+                        } else {
+                            data.Items.forEach(function(element, index, array) {
+                                statDataFull.push(JSON.stringify(element));
+                            });
+                            res.render('dashboard', { hr: hrDataFull, oc: ocDataFull, stat: statDataFull });
+                        }
+                    });
+                }
+            });
         }
     });
 

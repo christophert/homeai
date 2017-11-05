@@ -16,6 +16,8 @@ var session = require('express-session');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var dashboard = require('./routes/dashboard');
+var energy = require('./routes/energy');
 var aws_router = require('./routes/aws');
 
 var app = express();
@@ -34,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/dashboard', dashboard);
+app.use('/energy', energy);
 app.use('/aws', aws_router);
 
 // catch 404 and forward to error handler
