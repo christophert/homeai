@@ -1,0 +1,76 @@
+extends layout
+
+block content
+
+    div(class="container-fluid")
+        div(class="row")
+            main(role="main", class="col-sm-12 ml-sm-auto col-md-12 pt-3")
+            | <canvas id="dataptchart"></canvas>
+        div(class="row")
+            div(class="col-sm-6 ml-sm-auto col-md-6 pt-3")
+                h3 Heart Rate
+                | <div id="hr-zoomed-chart"></div>
+                | <div id="hr-range-selector"></div>
+            div(class="col-sm-3 ml-sm-auto col-md-3 pt-3")
+                | <div id="power-zoomed-chart"></div>
+                | <div id="power-range-selector"></div>
+        div(class="row")
+            div(class="col-sm-3 ml-sm-auto col-md-3 pt-3")
+                | <canvas id="tempchart"></canvas>
+            div(class="col-sm-3 ml-sm-auto col-md-3 pt-3")
+                table(class="table")/
+                
+block pagejs
+    script(src="https://cdn3.devexpress.com/jslib/17.1.7/js/dx.all.js")
+    script.
+        var dataSource = [!{hr}];
+        $.each(dataSource, function(index, entry) {
+            entry.time = new Date(entry.time);
+        });
+        $('#hr-zoomed-chart').dxChart({
+            commonSeriesSettings: {
+                point: {
+                    size: 7
+                }
+            },
+            series: {
+                name: "Heart Rate",
+                argumentField: "time",
+                valueField: "hr",
+            },
+            legend: {
+                visible: false
+            },
+            dataSource: dataSource
+        });
+        $('#hr-range-selector').dxRangeSelector({
+            size: {
+                height: 120
+            },
+            dataSource: dataSource,
+            chart: {
+                series: {
+                    argumentField: "time",
+                    valueField: "hr"
+                }
+            },
+            scale: {
+                minorTickInterval: "day",
+                tickInterval: "day",
+                valueType: "datetime"
+            },
+            sliderMarker: {
+                format: 'day'
+            },
+            behavior: {
+                callValueChanged: "onMoving",
+                snapToTicks: false
+            },
+            onValueChanged: function(e) {
+                var zoomedChart = $('#hr-zoomed-chart').dxChart("instance");
+                zoomedChart.zoomArgument(e.value[0], e.value[1]);
+            }
+        });
+    script.
+        var ocDataSource = [!{oc}];
+        var statDataSource = [!{stat}];
