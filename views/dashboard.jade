@@ -1,49 +1,684 @@
 extends layout
-
+block head
+    style.
+        .cdeviceinit {
+            display: none;
+        }
 block content
 
     div(class="container-fluid")
         div(class="row")
-            main(role="main", class="col-sm-12 ml-sm-auto col-md-12 pt-3")
-            | <canvas id="dataptchart"></canvas>
+            h1 Administrative Status
         div(class="row")
-            div(class="col-sm-6 ml-sm-auto col-md-6 pt-3")
+            div(class="col-sm-12 col-md-12")
+                h3 Occupants in home
+                | <div id="oc-zoomed-chart"></div>
+                | <div id="oc-range-selector"></div>
+        div(class="row")
+            div(class="col-sm-6 col-md-6")
                 h3 Heart Rate
                 | <div id="hr-zoomed-chart"></div>
                 | <div id="hr-range-selector"></div>
-            div(class="col-sm-3 ml-sm-auto col-md-3 pt-3")
-                | <div id="power-zoomed-chart"></div>
-                | <div id="power-range-selector"></div>
+            div(class="col-sm-6 col-md-6")
+                h3 Recent energy usage
+                | <div id="usage-per-week-chart"></div>
+                | <div id="usage-per-week-selector"></div>
         div(class="row")
-            div(class="col-sm-3 ml-sm-auto col-md-3 pt-3")
-                | <canvas id="tempchart"></canvas>
-            div(class="col-sm-3 ml-sm-auto col-md-3 pt-3")
-                table(class="table")/
+            div(class="col-sm-6 col-md-6")
+                h3 Connected Device Status
+                table(class="table", id="connecteddevicestatus")
+                    thead
+                        tr
+                            th(scope="col") Device 
+                            th(scope="col") Status
+                        tbody
+                            tr(class="cdeviceinit", id="phue")
+                                td Philips Hue
+                            tr(class="cdeviceinit", id="smartoutlet")
+                                td TP-Link Smart Outlet
+                            tr(class="cdeviceinit", id="deadbolt")
+                                td Lockitron Deadbolt
+                            tr(class="cdeviceinit", id="watch")
+                                td Apple Watch
+                            tr(class="cdeviceinit", id="nest")
+                                td Nest Smart Thermostat
+            div(class="col-sm-6 col-md-6")
+                h3 ML Prediction Matrix
+                table(class="table", id="predictionstable")
+                    thead
+                        tr
+                            th(scope="col") Prediction
+                            th(scope="col") Expected time
+                    | <tbody></tbody>
                 
 block pagejs
     script(src="https://cdn3.devexpress.com/jslib/17.1.7/js/dx.all.js")
     script.
-        var dataSource = [!{hr}];
+        var dataSource = [
+          {
+            "time": 1509864904788,
+            "power": 193
+          },
+          {
+            "time": 1509865047788,
+            "power": 158
+          },
+          {
+            "time": 1509865190788,
+            "power": 238
+          },
+          {
+            "time": 1509865333788,
+            "power": 152
+          },
+          {
+            "time": 1509865476788,
+            "power": 225
+          },
+          {
+            "time": 1509865619788,
+            "power": 221
+          },
+          {
+            "time": 1509865762788,
+            "power": 171
+          },
+          {
+            "time": 1509865905788,
+            "power": 224
+          },
+          {
+            "time": 1509866048788,
+            "power": 236
+          },
+          {
+            "time": 1509866191788,
+            "power": 233
+          },
+          {
+            "time": 1509866334788,
+            "power": 234
+          },
+          {
+            "time": 1509866477788,
+            "power": 156
+          },
+          {
+            "time": 1509866620788,
+            "power": 196
+          },
+          {
+            "time": 1509866763788,
+            "power": 174
+          },
+          {
+            "time": 1509866906788,
+            "power": 194
+          },
+          {
+            "time": 1509867049788,
+            "power": 206
+          },
+          {
+            "time": 1509867192788,
+            "power": 259
+          },
+          {
+            "time": 1509867335788,
+            "power": 300
+          },
+          {
+            "time": 1509867478788,
+            "power": 280
+          },
+          {
+            "time": 1509867621788,
+            "power": 161
+          },
+          {
+            "time": 1509867764788,
+            "power": 241
+          },
+          {
+            "time": 1509867907788,
+            "power": 191
+          },
+          {
+            "time": 1509868050788,
+            "power": 212
+          },
+          {
+            "time": 1509868193788,
+            "power": 204
+          },
+          {
+            "time": 1509868336788,
+            "power": 298
+          },
+          {
+            "time": 1509868479788,
+            "power": 227
+          },
+          {
+            "time": 1509868622788,
+            "power": 240
+          },
+          {
+            "time": 1509868765788,
+            "power": 230
+          },
+          {
+            "time": 1509868908788,
+            "power": 178
+          },
+          {
+            "time": 1509869051788,
+            "power": 198
+          },
+          {
+            "time": 1509869194788,
+            "power": 263
+          },
+          {
+            "time": 1509869337788,
+            "power": 274
+          },
+          {
+            "time": 1509869480788,
+            "power": 175
+          },
+          {
+            "time": 1509869623788,
+            "power": 229
+          },
+          {
+            "time": 1509869766788,
+            "power": 252
+          },
+          {
+            "time": 1509869909788,
+            "power": 245
+          },
+          {
+            "time": 1509870052788,
+            "power": 271
+          },
+          {
+            "time": 1509870195788,
+            "power": 275
+          },
+          {
+            "time": 1509870338788,
+            "power": 283
+          },
+          {
+            "time": 1509870481788,
+            "power": 214
+          },
+          {
+            "time": 1509870624788,
+            "power": 293
+          },
+          {
+            "time": 1509870767788,
+            "power": 223
+          },
+          {
+            "time": 1509870910788,
+            "power": 181
+          },
+          {
+            "time": 1509871053788,
+            "power": 258
+          },
+          {
+            "time": 1509871196788,
+            "power": 261
+          },
+          {
+            "time": 1509871339788,
+            "power": 247
+          },
+          {
+            "time": 1509871482788,
+            "power": 253
+          },
+          {
+            "time": 1509871625788,
+            "power": 169
+          },
+          {
+            "time": 1509871768788,
+            "power": 182
+          },
+          {
+            "time": 1509871911788,
+            "power": 203
+          },
+          {
+            "time": 1509872054788,
+            "power": 205
+          },
+          {
+            "time": 1509872197788,
+            "power": 201
+          },
+          {
+            "time": 1509872340788,
+            "power": 190
+          },
+          {
+            "time": 1509872483788,
+            "power": 257
+          },
+          {
+            "time": 1509872626788,
+            "power": 266
+          },
+          {
+            "time": 1509872769788,
+            "power": 176
+          },
+          {
+            "time": 1509872912788,
+            "power": 211
+          },
+          {
+            "time": 1509873055788,
+            "power": 215
+          },
+          {
+            "time": 1509873198788,
+            "power": 251
+          },
+          {
+            "time": 1509873341788,
+            "power": 207
+          },
+          {
+            "time": 1509873484788,
+            "power": 186
+          },
+          {
+            "time": 1509873627788,
+            "power": 177
+          },
+          {
+            "time": 1509873770788,
+            "power": 269
+          },
+          {
+            "time": 1509873913788,
+            "power": 173
+          },
+          {
+            "time": 1509874056788,
+            "power": 279
+          },
+          {
+            "time": 1509874199788,
+            "power": 192
+          },
+          {
+            "time": 1509874342788,
+            "power": 220
+          },
+          {
+            "time": 1509874485788,
+            "power": 248
+          },
+          {
+            "time": 1509874628788,
+            "power": 184
+          },
+          {
+            "time": 1509874771788,
+            "power": 189
+          },
+          {
+            "time": 1509874914788,
+            "power": 209
+          },
+          {
+            "time": 1509875057788,
+            "power": 167
+          },
+          {
+            "time": 1509875200788,
+            "power": 216
+          },
+          {
+            "time": 1509875343788,
+            "power": 155
+          },
+          {
+            "time": 1509875486788,
+            "power": 200
+          },
+          {
+            "time": 1509875629788,
+            "power": 168
+          },
+          {
+            "time": 1509875772788,
+            "power": 265
+          },
+          {
+            "time": 1509875915788,
+            "power": 282
+          },
+          {
+            "time": 1509876058788,
+            "power": 286
+          },
+          {
+            "time": 1509876201788,
+            "power": 165
+          },
+          {
+            "time": 1509876344788,
+            "power": 199
+          },
+          {
+            "time": 1509876487788,
+            "power": 288
+          },
+          {
+            "time": 1509876630788,
+            "power": 264
+          },
+          {
+            "time": 1509876773788,
+            "power": 172
+          },
+          {
+            "time": 1509876916788,
+            "power": 239
+          },
+          {
+            "time": 1509877059788,
+            "power": 260
+          },
+          {
+            "time": 1509877202788,
+            "power": 202
+          },
+          {
+            "time": 1509877345788,
+            "power": 213
+          },
+          {
+            "time": 1509877488788,
+            "power": 254
+          },
+          {
+            "time": 1509877631788,
+            "power": 297
+          },
+          {
+            "time": 1509877774788,
+            "power": 249
+          },
+          {
+            "time": 1509877917788,
+            "power": 179
+          },
+          {
+            "time": 1509878060788,
+            "power": 210
+          },
+          {
+            "time": 1509878203788,
+            "power": 185
+          },
+          {
+            "time": 1509878346788,
+            "power": 197
+          },
+          {
+            "time": 1509878489788,
+            "power": 284
+          },
+          {
+            "time": 1509878632788,
+            "power": 278
+          },
+          {
+            "time": 1509878775788,
+            "power": 295
+          },
+          {
+            "time": 1509878918788,
+            "power": 157
+          },
+          {
+            "time": 1509879061788,
+            "power": 294
+          },
+          {
+            "time": 1509879204788,
+            "power": 159
+          },
+          {
+            "time": 1509879347788,
+            "power": 195
+          },
+          {
+            "time": 1509879490788,
+            "power": 256
+          },
+          {
+            "time": 1509879633788,
+            "power": 154
+          },
+          {
+            "time": 1509879776788,
+            "power": 231
+          },
+          {
+            "time": 1509879919788,
+            "power": 246
+          },
+          {
+            "time": 1509880062788,
+            "power": 255
+          },
+          {
+            "time": 1509880205788,
+            "power": 285
+          },
+          {
+            "time": 1509880348788,
+            "power": 281
+          },
+          {
+            "time": 1509880491788,
+            "power": 218
+          },
+          {
+            "time": 1509880634788,
+            "power": 188
+          },
+          {
+            "time": 1509880777788,
+            "power": 226
+          },
+          {
+            "time": 1509880920788,
+            "power": 160
+          },
+          {
+            "time": 1509881063788,
+            "power": 262
+          },
+          {
+            "time": 1509881206788,
+            "power": 187
+          },
+          {
+            "time": 1509881349788,
+            "power": 153
+          },
+          {
+            "time": 1509881492788,
+            "power": 242
+          },
+          {
+            "time": 1509881635788,
+            "power": 267
+          },
+          {
+            "time": 1509881778788,
+            "power": 232
+          },
+          {
+            "time": 1509881921788,
+            "power": 228
+          },
+          {
+            "time": 1509882064788,
+            "power": 290
+          },
+          {
+            "time": 1509882207788,
+            "power": 150
+          },
+          {
+            "time": 1509882350788,
+            "power": 164
+          },
+          {
+            "time": 1509882493788,
+            "power": 243
+          },
+          {
+            "time": 1509882636788,
+            "power": 276
+          },
+          {
+            "time": 1509882779788,
+            "power": 180
+          },
+          {
+            "time": 1509882922788,
+            "power": 244
+          },
+          {
+            "time": 1509883065788,
+            "power": 222
+          },
+          {
+            "time": 1509883208788,
+            "power": 237
+          },
+          {
+            "time": 1509883351788,
+            "power": 235
+          },
+          {
+            "time": 1509883494788,
+            "power": 208
+          },
+          {
+            "time": 1509883637788,
+            "power": 299
+          },
+          {
+            "time": 1509883780788,
+            "power": 268
+          },
+          {
+            "time": 1509883923788,
+            "power": 270
+          },
+          {
+            "time": 1509884066788,
+            "power": 292
+          },
+          {
+            "time": 1509884209788,
+            "power": 273
+          },
+          {
+            "time": 1509884352788,
+            "power": 183
+          },
+          {
+            "time": 1509884495788,
+            "power": 151
+          },
+          {
+            "time": 1509884638788,
+            "power": 250
+          },
+          {
+            "time": 1509884781788,
+            "power": 291
+          },
+          {
+            "time": 1509884924788,
+            "power": 296
+          },
+          {
+            "time": 1509885067788,
+            "power": 217
+          },
+          {
+            "time": 1509885210788,
+            "power": 287
+          },
+          {
+            "time": 1509885353788,
+            "power": 163
+          },
+          {
+            "time": 1509885496788,
+            "power": 289
+          },
+          {
+            "time": 1509885639788,
+            "power": 219
+          },
+          {
+            "time": 1509885782788,
+            "power": 166
+          },
+          {
+            "time": 1509885925788,
+            "power": 162
+          },
+          {
+            "time": 1509886068788,
+            "power": 277
+          },
+          {
+            "time": 1509886211788,
+            "power": 272
+          },
+          {
+            "time": 1509886354788,
+            "power": 170
+          }
+        ];
         $.each(dataSource, function(index, entry) {
             entry.time = new Date(entry.time);
         });
-        $('#hr-zoomed-chart').dxChart({
+        $('#usage-per-week-chart').dxChart({
             commonSeriesSettings: {
                 point: {
                     size: 7
                 }
             },
             series: {
-                name: "Heart Rate",
                 argumentField: "time",
-                valueField: "hr",
+                valueField: "power",
             },
             legend: {
                 visible: false
             },
             dataSource: dataSource
         });
-        $('#hr-range-selector').dxRangeSelector({
+        $('#usage-per-week-selector').dxRangeSelector({
             size: {
                 height: 120
             },
@@ -51,7 +686,8 @@ block pagejs
             chart: {
                 series: {
                     argumentField: "time",
-                    valueField: "hr"
+                    valueField: "power",
+                    color: '#e74c3c'
                 }
             },
             scale: {
@@ -67,10 +703,148 @@ block pagejs
                 snapToTicks: false
             },
             onValueChanged: function(e) {
-                var zoomedChart = $('#hr-zoomed-chart').dxChart("instance");
+                var zoomedChart = $('#usage-per-week-chart').dxChart("instance");
                 zoomedChart.zoomArgument(e.value[0], e.value[1]);
             }
         });
     script.
-        var ocDataSource = [!{oc}];
-        var statDataSource = [!{stat}];
+        $.ajax({
+            url: '/aws/hr-data',
+            type: 'GET',
+            success: function(data) {
+                var dataSource = data;
+                $.each(dataSource, function(index, entry) {
+                    entry.time = new Date(entry.time);
+                });
+                $('#hr-zoomed-chart').dxChart({
+                    commonSeriesSettings: {
+                        point: {
+                            size: 7
+                        }
+                    },
+                    series: {
+                        name: "Heart Rate",
+                        argumentField: "time",
+                        valueField: "hr",
+                        color: '#e74c3c'
+                    },
+                    legend: {
+                        visible: false
+                    },
+                    dataSource: dataSource
+                });
+                $('#hr-range-selector').dxRangeSelector({
+                    size: {
+                        height: 120
+                    },
+                    dataSource: dataSource,
+                    chart: {
+                        series: {
+                            argumentField: "time",
+                            valueField: "hr",
+                            color: '#e74c3c'
+                        }
+                    },
+                    scale: {
+                        minorTickInterval: "day",
+                        tickInterval: "day",
+                        valueType: "datetime"
+                    },
+                    sliderMarker: {
+                        format: 'day'
+                    },
+                    behavior: {
+                        callValueChanged: "onMoving",
+                        snapToTicks: false
+                    },
+                    onValueChanged: function(e) {
+                        var zoomedChart = $('#hr-zoomed-chart').dxChart("instance");
+                        zoomedChart.zoomArgument(e.value[0], e.value[1]);
+                    }
+                });
+            }
+        });
+    script.
+        $.ajax({
+            url: '/aws/oc-data',
+            type: 'GET',
+            success: function(data) {
+                var dataSource = data;
+                $.each(dataSource, function(index, entry) {
+                    entry.time = new Date(entry.time);
+                });
+                $('#oc-zoomed-chart').dxChart({
+                    commonSeriesSettings: {
+                        type: "splinearea",
+                        point: {
+                            size: 7
+                        }
+                    },
+                    series: {
+                        name: "Occupants",
+                        argumentField: "time",
+                        valueField: "r4",
+                        color: '#e67e22'
+                    },
+                    legend: {
+                        visible: false
+                    },
+                    dataSource: dataSource
+                });
+                $('#oc-range-selector').dxRangeSelector({
+                    size: {
+                        height: 120
+                    },
+                    dataSource: dataSource,
+                    chart: {
+                        series: {
+                            argumentField: "time",
+                            color: '#e67e22',
+                            valueField: "r4"
+                        }
+                    },
+                    scale: {
+                        minorTickInterval: "day",
+                        tickInterval: "day",
+                        valueType: "datetime"
+                    },
+                    sliderMarker: {
+                        format: 'day'
+                    },
+                    behavior: {
+                        callValueChanged: "onMoving",
+                        snapToTicks: false
+                    },
+                    onValueChanged: function(e) {
+                        var zoomedChart = $('#oc-zoomed-chart').dxChart("instance");
+                        zoomedChart.zoomArgument(e.value[0], e.value[1]);
+                    }
+                });
+            }
+        });
+    script.
+        $.ajax({
+            url: '/aws/pr-data',
+            type: 'GET',
+            success: function(data) {
+                $.each(data, function(index, prentry) {
+                    var row = "<tr><td>"+prentry.prediction+"</td><td>"+prentry.expected+"</td>";
+                    $('#predictionstable').append(row);
+                });
+            }
+        });
+    script.
+        $.ajax({
+            url: '/aws/st-data',
+            type: 'GET',
+            success: function(data) {
+                $.each(data, function(index, prentry) {
+                });
+                $('#phue').append('<td>Status Unknown</td>').addClass('table-danger');
+                $('#smartoutlet').append('<td>Status Unknown</td>').addClass('table-danger');
+                $('#deadbolt').append('<td>Status Unknown</td>').addClass('table-danger');
+                $('#watch').append('<td>Active</td>').addClass('table-success');
+                $('#nest').append('<td>Active; Training</td>').addClass('table-warning');
+                $('.cdeviceinit').show();
+            }
+        });
